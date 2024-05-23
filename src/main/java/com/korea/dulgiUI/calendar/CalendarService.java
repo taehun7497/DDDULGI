@@ -61,8 +61,6 @@ public class CalendarService {
         event1.setUserCalendar(calendar);
         event1.setCreateDate(LocalDateTime.now());
         eventRepository.save(event1);
-
-        eventRepository.save(event1);
     }
 
     public UserCalendar getcalendar(Long id){

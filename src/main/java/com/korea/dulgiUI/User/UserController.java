@@ -1,5 +1,7 @@
 package com.korea.dulgiUI.User;
 
+import com.korea.dulgiUI.Event.Event;
+import com.korea.dulgiUI.Event.EventService;
 import com.korea.dulgiUI.Message;
 import com.korea.dulgiUI.answer.Answer;
 import com.korea.dulgiUI.answer.AnswerService;
@@ -14,12 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +33,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final UserRepository userRepository;
+    private final EventService eventService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/info")
@@ -187,6 +188,52 @@ public class UserController {
             userService.updateUser(user, nickname);
             return "redirect:/user/info";
         }
+    }
+
+    @GetMapping("/profile")
+    public String userProfile(Model model, Principal principal) {
+        String username = principal.getName();
+        model.addAttribute("username", username);
+        // 다른 필요한 작업 수행
+
+        // 다른 페이지로 리디렉션
+        return "redirect:/calendar/" + username; // 사용자의 캘린더 페이지로 리디렉션
+    }
+
+    @GetMapping("calendar/{username}")
+    public String personalCalendar(Model model,
+                               @PathVariable(name = "username") String username,
+                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth) {
+
+        Long parsedCalendarId;
+        try {
+            parsedCalendarId = Long.parseLong(username);
+        } catch (NumberFormatException e) {
+            // 예외 처리
+            return "errorPage"; // 오류가 발생하면 적절한 에러 페이지로 리다이렉트합니다.
+        }
+
+        List<Event> events = this.eventService.findByCalendarId(parsedCalendarId);
+
+        // targetMonth가 0 이하면 현재 월의 값을 사용하여 이벤트 목록을 가져옴
+        if (targetMonth <= 0) {
+            LocalDateTime now = LocalDateTime.now();
+            targetMonth = now.getMonthValue();
+        }
+
+        int prevMonth = targetMonth - 1;
+        int nextMonth = targetMonth + 1;
+
+        List<Event> eventsForMonth = this.eventService.getEventsForMonth(events, targetMonth);
+
+        model.addAttribute("username", username);
+        model.addAttribute("targetMonth", targetMonth);
+        model.addAttribute("prevMonth", prevMonth);
+        model.addAttribute("nextMonth", nextMonth);
+        model.addAttribute("calendarId", parsedCalendarId);
+        model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
+
+        return "UserCalendarForm";
     }
 
     public static class PasswordGenerator {
