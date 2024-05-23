@@ -1,5 +1,7 @@
 package com.korea.dulgiUI.User;
 
+import com.korea.dulgiUI.calendar.UserCalendar;
+import com.korea.dulgiUI.calendar.CalendarService;
 import com.korea.dulgiUI.error.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +14,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CalendarService calendarService;
 
     public SiteUser create(String username,
                            String nickname,
@@ -33,6 +36,13 @@ public class UserService {
         user.setLocation(location);
         user.setMobile(mobile);
         user.setLanguages(languages);
+        // SiteUser 엔티티를 먼저 저장합니다.
+        SiteUser savedUser = userRepository.save(user);
+
+        // 새 사용자 등록 시 달력 생성 및 기본 이벤트 추가
+        UserCalendar userCalendar = calendarService.createCalendar(savedUser);
+        savedUser.setUserCalendar(userCalendar);
+
         this.userRepository.save(user);
         return user;
     }

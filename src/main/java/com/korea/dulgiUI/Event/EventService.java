@@ -1,6 +1,6 @@
 package com.korea.dulgiUI.Event;
 
-import com.korea.dulgiUI.calendar.Calendar;
+import com.korea.dulgiUI.calendar.UserCalendar;
 import com.korea.dulgiUI.calendar.CalendarService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,8 @@ public class EventService {
         e.setStartDate(startDate);
         e.setEndDate(endDate);
         e.setRegistrationLink(link);
-        Calendar calendar = calendarService.getcalendar(calendarId);
-        e.setCalendar(calendar);
+        UserCalendar userCalendar = calendarService.getcalendar(calendarId);
+        e.setUserCalendar(userCalendar);
         return eventRepository.save(e); // 저장된 이벤트 객체 반환
     }
 
@@ -69,7 +69,7 @@ public class EventService {
     }
 
     public List<Event> findByCalendarId(Long calendarId) {
-        return eventRepository.findByCalendarId(calendarId);
+        return eventRepository.findByUserCalendarId(calendarId);
     }
 
     public Event findById(Long eventId) {

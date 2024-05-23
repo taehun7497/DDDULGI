@@ -1,5 +1,6 @@
 package com.korea.dulgiUI.User;
 
+import com.korea.dulgiUI.calendar.UserCalendar;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,4 +48,8 @@ public class SiteUser {
             return ""; // 빈 문자열 반환
         }
     }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "calendar_id")
+    private UserCalendar userCalendar;
 }

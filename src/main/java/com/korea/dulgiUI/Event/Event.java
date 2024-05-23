@@ -1,7 +1,7 @@
 package com.korea.dulgiUI.Event;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.korea.dulgiUI.calendar.Calendar;
+import com.korea.dulgiUI.calendar.UserCalendar;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,5 +33,5 @@ public class Event {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    private Calendar calendar;
+    private UserCalendar userCalendar;
 }
