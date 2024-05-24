@@ -190,24 +190,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profile")
-    public String userProfile(Model model, Principal principal) {
-        String username = principal.getName();
-        model.addAttribute("username", username);
-        // 다른 필요한 작업 수행
-
-        // 다른 페이지로 리디렉션
-        return "redirect:/calendar/" + username; // 사용자의 캘린더 페이지로 리디렉션
-    }
-
-    @GetMapping("calendar/{username}")
+    @GetMapping("/calendar/{calendarId}")
     public String personalCalendar(Model model,
-                               @PathVariable(name = "username") String username,
-                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth) {
+                                   @PathVariable(name = "calendarId", required = false) String calendarId,
+                                   @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth) {
+        if (calendarId == null || calendarId.isEmpty()) {
+            // 기본 calendarId를 설정합니다. 예: "1"
+            calendarId = "1";
+        }
 
         Long parsedCalendarId;
         try {
-            parsedCalendarId = Long.parseLong(username);
+            parsedCalendarId = Long.parseLong(calendarId);
         } catch (NumberFormatException e) {
             // 예외 처리
             return "errorPage"; // 오류가 발생하면 적절한 에러 페이지로 리다이렉트합니다.
@@ -226,15 +220,17 @@ public class UserController {
 
         List<Event> eventsForMonth = this.eventService.getEventsForMonth(events, targetMonth);
 
-        model.addAttribute("username", username);
+        model.addAttribute("calendarId", calendarId);
         model.addAttribute("targetMonth", targetMonth);
         model.addAttribute("prevMonth", prevMonth);
         model.addAttribute("nextMonth", nextMonth);
-        model.addAttribute("calendarId", parsedCalendarId);
+        model.addAttribute("parsedCalendarId", parsedCalendarId); // 모델에 추가된 올바른 이름
+
         model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
 
-        return "UserCalendarForm";
+        return "UserCalendar";
     }
+
 
     public static class PasswordGenerator {
         private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";

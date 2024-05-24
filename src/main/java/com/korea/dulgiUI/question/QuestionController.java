@@ -1,6 +1,7 @@
 package com.korea.dulgiUI.question;
 
 import com.korea.dulgiUI.User.SiteUser;
+import com.korea.dulgiUI.User.UserDetail;
 import com.korea.dulgiUI.User.UserService;
 import com.korea.dulgiUI.answer.Answer;
 import com.korea.dulgiUI.answer.AnswerForm;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +37,7 @@ public class QuestionController {
     private final CategoryService categoryService;
     private final AnswerService answerService;
 
+
     // 요청 경로가 "/question/list/{category}"인 HTTP GET 요청을 처리하는 메서드입니다.
     @RequestMapping("/list/{category}")
     public String list(Model model,
@@ -42,7 +46,7 @@ public class QuestionController {
                        // URL 경로에서 추출한 카테고리 이름을 받습니다.
                        @PathVariable("category") String category,
                        // 검색어를 나타내는 파라미터로 기본값은 빈 문자열입니다.
-                       @RequestParam(value = "kw", defaultValue = "") String kw) {
+                       @RequestParam(value = "kw", defaultValue = "") String kw, @AuthenticationPrincipal UserDetails userDetails) {
 
         // 카테고리 이름을 기반으로 해당 카테고리를 데이터베이스에서 조회합니다.
         Category category1 = this.categoryService.getCategoryByTitle(category);
@@ -50,11 +54,19 @@ public class QuestionController {
         // 특정 페이지에 해당하는 게시물 목록을 검색어와 함께 가져옵니다.
         Page<Question> paging = this.questionService.getList(page, kw, category1);
 
+        Long parsedCalendarId = null;
+
+        if (userDetails != null) {
+            SiteUser user = userService.getUser(userDetails.getUsername());
+            parsedCalendarId = user.getUserCalendar().getId();
+        }
+
         // Model 객체는 자바 클래스와 템플릿 간의 연결고리 역할을 한다. Model 객체에 값을 담아두면 템플릿에서 그 값을 사용할 수 있다.
         // Model 객체에 검색 결과, 검색어, 카테고리 정보를 담아서 뷰로 전달합니다.
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("category", category);
+        model.addAttribute("parsedCalendarId", parsedCalendarId);
 
         // 뷰 이름인 "question_list"를 반환합니다.
         return "question_list";

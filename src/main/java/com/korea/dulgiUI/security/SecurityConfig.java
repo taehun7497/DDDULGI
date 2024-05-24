@@ -1,5 +1,6 @@
 package com.korea.dulgiUI.security;
 
+import com.korea.dulgiUI.User.UserDetail;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,6 +8,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
@@ -21,19 +25,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**", "/user/login", "/user/signup").permitAll()  // 다른 정적 리소스 경로 허용).permitAll()
+                        .requestMatchers( "/user/login", "/user/signup").permitAll()  // 다른 정적 리소스 경로 허용).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf((csrf) -> csrf
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/calendar/**"))
                 )
-
-                .headers((headers) -> headers
-                        .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
                 .formLogin(formLogin ->
                         formLogin.loginPage("/user/login")
-                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("/", true)
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/user/login"))

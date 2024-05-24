@@ -61,7 +61,7 @@ public class CalendarController {
             parsedCalendarId = Long.parseLong(calendarId);
         } catch (NumberFormatException e) {
             // 예외 처리
-            return "errorPage"; // 오류가 발생하면 적절한 에러 페이지로 리다이렉트합니다.
+            return "PageError"; // 오류가 발생하면 적절한 에러 페이지로 리다이렉트합니다.
         }
 
         List<Event> events = this.eventService.findByCalendarId(parsedCalendarId);
@@ -83,7 +83,7 @@ public class CalendarController {
         model.addAttribute("calendarId", parsedCalendarId);
         model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
 
-        return "calendarForm";
+        return "UserCalendar";
     }
 
     @GetMapping("/{calendarId}/events")
