@@ -83,7 +83,7 @@ public class CalendarController {
         model.addAttribute("calendarId", parsedCalendarId);
         model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
 
-        return "UserCalendar";
+        return "CalendarForm";
     }
 
     @GetMapping("/{calendarId}/events")

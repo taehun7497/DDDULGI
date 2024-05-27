@@ -1,0 +1,16 @@
+<html layout:decorate="~{layout2}">
+<div layout:fragment="content">
+    <div>
+        <a href="/chat/create"> 채팅방 만들기</a>
+    </div>
+
+    <div>
+        <ul>
+            <li th:if="${chatroomList != null}" th:each="chatroom : ${chatroomList}">
+                <a class="talk" th:href="@{|/chat/talk/${chatroom.id}|}" th:text="${chatroom.name}"></a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</html>
