@@ -21,9 +21,8 @@ public class UserService {
                            String email,
                            String password,
                            String gender,
-                           String location,
                            String mobile,
-                           String languages) {
+                           String department) {
 
         SiteUser user = new SiteUser();
         //BCrypt 해싱함수를 사용해서 암호화
@@ -33,9 +32,9 @@ public class UserService {
         user.setEmail(email);
         user.setGender(gender);
         user.setNickname(nickname);
-        user.setLocation(location);
+        user.setDepartment(department);
         user.setMobile(mobile);
-        user.setLanguages(languages);
+
         // SiteUser 엔티티를 먼저 저장합니다.
         SiteUser savedUser = userRepository.save(user);
 

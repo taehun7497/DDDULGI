@@ -132,10 +132,9 @@ public class UserController {
                     userCreateForm.getNickname(),
                     userCreateForm.getEmail(),
                     userCreateForm.getPassword1(),
-                    userCreateForm.getBirthday(),
+                    userCreateForm.getDepartment(),
                     userCreateForm.getGender(),
-                    userCreateForm.getMobile(),
-                    userCreateForm.getLocation()
+                    userCreateForm.getMobile()
             );
 
             return "success";

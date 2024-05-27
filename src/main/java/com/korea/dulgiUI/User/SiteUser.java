@@ -31,11 +31,7 @@ public class SiteUser {
 
     private String mobile;
 
-    private String location;
-
-    private String languages;
-
-    private String birthday;
+    private String department;
 
     @Lob
     private byte[] profileImage;

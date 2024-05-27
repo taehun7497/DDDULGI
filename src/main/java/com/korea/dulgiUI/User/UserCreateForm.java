@@ -26,15 +26,11 @@ public class UserCreateForm {
     @NotEmpty(message = "사용자 닉네임은 필수항목입니다.")
     private String nickname;
 
-    private String gender; // 라디오 버튼영어 값 받기
-
     private String mobile;
 
-    private String location;
+    private String department;
 
-    private String languages;
-
-    private String birthday;
+    private String gender; // 라디오 버튼영어 값 받기
 
     private String agree;
 }

@@ -22,17 +22,13 @@ public class QSiteUser extends EntityPathBase<SiteUser> {
 
     public static final QSiteUser siteUser = new QSiteUser("siteUser");
 
-    public final StringPath birthday = createString("birthday");
+    public final StringPath department = createString("department");
 
     public final StringPath email = createString("email");
 
     public final StringPath gender = createString("gender");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath languages = createString("languages");
-
-    public final StringPath location = createString("location");
 
     public final StringPath mobile = createString("mobile");
 
