@@ -80,6 +80,59 @@
             </div>
             <div class="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
                 <div class="flex items-center space-x-4 mt-2">
+
+                    <button class="btn" onclick="my_modal_7.showModal()">친구목록</button>
+                    <dialog id="my_modal_7" class="modal modal-bottom sm:modal-middle">
+                        <div class="modal-box">
+                            <div th:each="List : ${friendList}">
+                                <p th:if="${List.friend1.nickname == user.nickname}" th:text="${List.friend2.nickname}"></p>
+                                <p th:if="${List.friend2.nickname == user.nickname}" th:text="${List.friend1.nickname}"></p>
+                            </div>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <!-- if there is a button in form, it will close the modal -->
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+
+                    <button class="btn" onclick="my_modal_6.showModal()">친구요청</button>
+                    <dialog id="my_modal_6" class="modal modal-bottom sm:modal-middle">
+                        <div class="modal-box">
+                            <div th:each="List : ${acceptUser}">
+                            <p th:text="${List.friend1.nickname}+'님에게 친구요청이 왔습니다.'"></p>
+                                <form th:action="@{|/friend/accept/${List.friend1.id}|}" method="post">
+                                    <input type="submit" name="action" value="accept">
+                                    <input type="submit" name="action" value="reject">
+                                </form>
+                            </div>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <!-- if there is a button in form, it will close the modal -->
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+
+                    <!-- Open the modal using ID.showModal() method -->
+                    <button class="btn" onclick="my_modal_5.showModal()">친구추가</button>
+                    <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+                        <div class="modal-box">
+                            <form action="/friend/add">
+                                <input type="text" name="nickname" placeholder="Nickname" class="input input-bordered">
+                                <input type="submit" class="btn">
+                            </form>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <!-- if there is a button in form, it will close the modal -->
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+
                     <a th:href="@{/user/edit}"
                        class="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

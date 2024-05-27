@@ -6,6 +6,8 @@ import com.korea.dulgiUI.Message;
 import com.korea.dulgiUI.answer.Answer;
 import com.korea.dulgiUI.answer.AnswerService;
 import com.korea.dulgiUI.email.EmailService;
+import com.korea.dulgiUI.friendShip.FriendShip;
+import com.korea.dulgiUI.friendShip.FriendShipService;
 import com.korea.dulgiUI.question.Question;
 import com.korea.dulgiUI.question.QuestionService;
 import jakarta.validation.Valid;
@@ -34,6 +36,8 @@ public class UserController {
     private final EmailService emailService;
     private final UserRepository userRepository;
     private final EventService eventService;
+    private final FriendShipService friendShipService;
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/info")
@@ -43,10 +47,13 @@ public class UserController {
         SiteUser user = this.userService.getUser(principal.getName());
         List<Question> questionList = this.questionService.getQuestions(user);
         List<Answer> answerList = this.answerService.getListByAuthor(user);
-
+        List<FriendShip> acceptUserList = friendShipService.findAccept(user.getId());
+        List<FriendShip> friendList = friendShipService.findFriendAll(user.getId());
         model.addAttribute("answers", answerList);
         model.addAttribute("questions", questionList);
         model.addAttribute("user", user);
+        model.addAttribute("acceptUser", acceptUserList);
+        model.addAttribute("friendList", friendList);
         return "user_info";
     }
 
