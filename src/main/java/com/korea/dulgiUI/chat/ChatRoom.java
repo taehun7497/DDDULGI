@@ -16,7 +16,7 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String chatPW;
+    private String password;
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     List<ChatMessage> chatMessageList = new ArrayList<>();

@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.List;
 public class ChatroomController {
     private final ChatroomService chatroomService;
     private final UserService userService;
-    private final ChatMessageService chatMessageService;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -30,15 +30,26 @@ public class ChatroomController {
 
     @GetMapping("/create")
     public String create() {
-
         return "createChat_form";
     }
 
     @PostMapping("/create")
-    public String create(@RequestParam("name") String name) {
-        chatroomService.create(name);
-
+    public String create(@RequestParam("name") String name,
+                         @RequestParam("password") String password) {
+        chatroomService.create(name, password);
         return "redirect:/chat/list";
+    }
+
+    @PostMapping("/enter")
+    public String enterChatRoom(@RequestParam("roomId") Long roomId,
+                                @RequestParam("password") String password,
+                                RedirectAttributes redirectAttributes) {
+        if (chatroomService.isValidPassword(roomId, password)) {
+            return "redirect:/chat/talk/" + roomId;
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Incorrect password!");
+            return "redirect:/chat/list";
+        }
     }
 
     @GetMapping("/talk/{id}")
