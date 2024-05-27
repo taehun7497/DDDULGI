@@ -11,7 +11,7 @@ import java.util.List;
 public class ChatroomService {
     private final ChatroomRepository chatroomRepository;
 
-    public ChatRoom create(String name, String password){
+    public ChatRoom create(String name, String password) {
         ChatRoom chatroom = new ChatRoom();
         chatroom.setName(name);
         chatroom.setPassword(password);

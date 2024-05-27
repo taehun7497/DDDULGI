@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers( "/user/login", "/user/signup").permitAll()  // 다른 정적 리소스 경로 허용).permitAll()
+                        .requestMatchers("/user/login", "/user/signup").permitAll()  // 다른 정적 리소스 경로 허용).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf((csrf) -> csrf

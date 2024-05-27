@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Title</title>
 </head>
+
 <body>
-<form th:action="@{|/chat/create|}" method="post" class="flex flex-col gap-7">
-    <input type="text" name="name" class="input input-bordered" placeholder="chatroom name">
-    <input type="password" name="password" class="input input-bordered" placeholder="chatroom PW">
-    <input type="submit" value="생성" class="btn">
-</form>
+    <form th:action="@{|/chat/create|}" method="post" class="flex flex-col gap-7">
+        <input type="text" name="name" class="input input-bordered" placeholder="chatroom name">
+        <input type="password" name="password" class="input input-bordered" placeholder="chatroom PW">
+        <input type="submit" value="생성" class="btn">
+    </form>
 </body>
+
 </html>

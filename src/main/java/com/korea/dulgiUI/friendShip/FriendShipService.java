@@ -11,6 +11,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FriendShipService {
     private final FriendShipRepository friendShipRepository;
+
     public void add(SiteUser owneruser, SiteUser friendSiteUser) {
         Optional<FriendShip> _Friendship = friendShipRepository.findByUsers(owneruser.getId(), friendSiteUser.getId());
         if (_Friendship.isEmpty()) {
@@ -21,19 +22,19 @@ public class FriendShipService {
         }
     }
 
-    public List<FriendShip> findAccept(Long id){
+    public List<FriendShip> findAccept(Long id) {
         return friendShipRepository.findByFriend(id);
     }
 
-    public FriendShip getFriend(Long id1,Long id2){
-        return friendShipRepository.findByFriend1AndFriend2(id1,id2);
+    public FriendShip getFriend(Long id1, Long id2) {
+        return friendShipRepository.findByFriend1AndFriend2(id1, id2);
     }
 
     public void delete(FriendShip friendShip) {
         friendShipRepository.delete(friendShip);
     }
 
-    public List<FriendShip> findFriendAll(Long id){
+    public List<FriendShip> findFriendAll(Long id) {
         return friendShipRepository.findByFriendList(id);
     }
 

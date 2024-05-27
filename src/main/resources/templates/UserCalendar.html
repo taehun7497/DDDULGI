@@ -10,7 +10,7 @@
             <br>
             <!-- 이벤트 추가 모달 -->
             <div id="eventModal"
-                 style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
+                style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
                 <div>
                     <label>달력 번호:</label>
                     <input type="number" id="calendar_id"><br>
@@ -21,7 +21,7 @@
                     <label>종료 시간:</label>
                     <input type="datetime-local" id="eventEnd"><br>
                     <button id="saveEvent"
-                            style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
+                        style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
                         이벤트 저장
                     </button>
                 </div>
@@ -35,80 +35,84 @@
                 <div class="flex-cole">
                     <!-- 버튼 -->
                     <div class="flex w-full justify-between mb-4">
-                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}"
-                              method="get">
+                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}" method="get">
                             <input type="hidden" name="calendarId" th:value="${calendarId}">
                             <input type="hidden" name="targetMonth" th:value="${prevMonth}">
                             <button type="submit"
-                                    class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">이전 달
+                                class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">이전 달
                             </button>
                         </form>
                         <h1 class="text-xl font-semibold" th:text="${targetMonth + ' 월 일정 리스트'}"></h1>
                         <input type="hidden" name="targetMonth" th:value="${targetMonth}">
-                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}"
-                              method="get">
+                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}" method="get">
                             <input type="hidden" name="calendarId" th:value="${calendarId}">
                             <input type="hidden" name="targetMonth" th:value="${nextMonth}">
                             <button type="submit"
-                                    class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">다음 달
+                                class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">다음 달
                             </button>
                         </form>
                     </div>
                     <!-- 일정 리스트 -->
-                    <div style="overflow-x: auto; width: 100%; height: 500px; border-radius: 10px; border: 0.3px solid lightgray;">
+                    <div
+                        style="overflow-x: auto; width: 100%; height: 500px; border-radius: 10px; border: 0.3px solid lightgray;">
                         <table class="table" style="border-collapse: collapse; width: 100%;">
                             <!-- head -->
                             <thead style="background-color: lightgray;">
-                            <tr>
-                                <th style="width: 10%;">번호</th>
-                                <th style="width: 40%;">일정</th>
-                                <th style="width: 30%;">날짜</th>
-                                <th style="width: 20%;">수정</th>
-                            </tr>
+                                <tr>
+                                    <th style="width: 10%;">번호</th>
+                                    <th style="width: 40%;">일정</th>
+                                    <th style="width: 30%;">날짜</th>
+                                    <th style="width: 20%;">수정</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="event, iterStat : ${eventsForMonth}" class="flex-wrap w-full lg:w-3/4">
-                                <!-- 이벤트의 순서와 제목, 기간 출력 -->
-                                <td th:text="${iterStat.index + 1 }"></td>
-                                <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
-                                    title="${event.title}" th:text="${event.title}"></td>
-                                <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
-                                    title="${event.startDate} + '~' + ${event.endDate}"
-                                    th:text="${event.startDate} + '~' + ${event.endDate}"></td>
-                                <td
+                                <tr th:each="event, iterStat : ${eventsForMonth}" class="flex-wrap w-full lg:w-3/4">
+                                    <!-- 이벤트의 순서와 제목, 기간 출력 -->
+                                    <td th:text="${iterStat.index + 1 }"></td>
+                                    <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
+                                        title="${event.title}" th:text="${event.title}"></td>
+                                    <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
+                                        title="${event.startDate} + '~' + ${event.endDate}"
+                                        th:text="${event.startDate} + '~' + ${event.endDate}"></td>
+                                    <td
                                         style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">
-                                    사이트 정보
-                                </td>
-                                <td> <!-- 수정 버튼 부분 -->
-                                    <!--onclick은 자바스크립트라 타임리프 문법 사용 x-->
-                                    <button class="btn" onclick="openModal(this)" th:data-id="${event.id}">Open modal</button>
-                                    <!-- 모달 요소 -->
-                                    <dialog th:id="${'eventModal_' + event.id}" class="modal">
-                                        <div class="modal-box">
-                                            <h3 class="font-bold text-lg">Modify Event</h3>
-                                            <p class="py-4">Press ESC key or click the button below to close</p>
-                                            <div class="modal-action">
-                                                <form method="dialog">
-                                                    <!-- 수정 양식 추가 -->
-                                                    <label>Event Title:</label>
-                                                    <input type="text" th:id="${'modifiedEventTitle_'+event.id}">
-                                                    <br>
-                                                    <label>Start Time:</label>
-                                                    <input type="datetime-local" th:id="${'modifiedEventStart_'+event.id}">
-                                                    <br>
-                                                    <label>End Time:</label>
-                                                    <input type="datetime-local" th:id="${'modifiedEventEnd_'+event.id}">
-                                                    <br>
-                                                    <!-- 수정 완료 버튼 -->
-                                                    <button class="btn" onclick="saveModifiedEvent(this)" th:data-id="${event.id}">저장</button>
-                                                    <!-- 모달 닫기 버튼 -->
-                                                    <button class="btn" onclick="closeModal(this)" th:data-id="${'eventModal_' + event.id}">Close</button>
-                                                </form>
+                                        사이트 정보
+                                    </td>
+                                    <td> <!-- 수정 버튼 부분 -->
+                                        <!--onclick은 자바스크립트라 타임리프 문법 사용 x-->
+                                        <button class="btn" onclick="openModal(this)" th:data-id="${event.id}">Open
+                                            modal</button>
+                                        <!-- 모달 요소 -->
+                                        <dialog th:id="${'eventModal_' + event.id}" class="modal">
+                                            <div class="modal-box">
+                                                <h3 class="font-bold text-lg">Modify Event</h3>
+                                                <p class="py-4">Press ESC key or click the button below to close</p>
+                                                <div class="modal-action">
+                                                    <form method="dialog">
+                                                        <!-- 수정 양식 추가 -->
+                                                        <label>Event Title:</label>
+                                                        <input type="text" th:id="${'modifiedEventTitle_'+event.id}">
+                                                        <br>
+                                                        <label>Start Time:</label>
+                                                        <input type="datetime-local"
+                                                            th:id="${'modifiedEventStart_'+event.id}">
+                                                        <br>
+                                                        <label>End Time:</label>
+                                                        <input type="datetime-local"
+                                                            th:id="${'modifiedEventEnd_'+event.id}">
+                                                        <br>
+                                                        <!-- 수정 완료 버튼 -->
+                                                        <button class="btn" onclick="saveModifiedEvent(this)"
+                                                            th:data-id="${event.id}">저장</button>
+                                                        <!-- 모달 닫기 버튼 -->
+                                                        <button class="btn" onclick="closeModal(this)"
+                                                            th:data-id="${'eventModal_' + event.id}">Close</button>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </dialog>
-                                </td>
-                            </tr>
+                                        </dialog>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -116,7 +120,7 @@
                 <!-- 일정 추가 버튼 -->
                 <div class="flex justify-between mt-4">
                     <button id="addEventBtn"
-                            style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
+                        style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
                         일정추가
                     </button>
                 </div>

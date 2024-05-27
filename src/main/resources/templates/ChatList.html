@@ -1,70 +1,72 @@
 <html layout:decorate="~{layout2}">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room List</title>
 </head>
+
 <body>
-<div layout:fragment="content">
-    <div>
-        <a href="/chat/create">Create Chat Room</a>
-    </div>
-    <div>
-        <ul>
-            <li th:if="${chatroomList != null}" th:each="chatroom : ${chatroomList}">
-                <a class="talk" th:href="@{|/chat/talk/${chatroom.id}|}" th:text="${chatroom.name}"></a>
-                <!-- The button to open modal -->
-                <label th:for="${'my_modal_' + chatroom.id}" class="btn"
-                       th:text="'Enter Chat Room'"></label>
-                <!-- Modal -->
-                <input type="checkbox" th:id="${'my_modal_' + chatroom.id}" class="modal-toggle"/>
-                <div class="modal" role="dialog">
-                    <div class="modal-box">
-                        <h3 class="font-bold text-lg">Enter Password</h3>
-                        <form class="passwordForm" th:action="@{|/chat/enter|}" method="post">
-                            <input type="hidden" name="roomId" class="roomId" th:value="${chatroom.id}"/>
-                            <input type="password" name="password" class="password" placeholder="Enter password"/>
-                            <button type="submit">Enter</button>
-                        </form>
-                        <div class="modal-action">
-                            <label th:for="${'my_modal_' + chatroom.id}" class="btn">Close</label>
+    <div layout:fragment="content">
+        <div>
+            <a href="/chat/create">Create Chat Room</a>
+        </div>
+        <div>
+            <ul>
+                <li th:if="${chatroomList != null}" th:each="chatroom : ${chatroomList}">
+                    <a class="talk" th:href="@{|/chat/talk/${chatroom.id}|}" th:text="${chatroom.name}"></a>
+                    <!-- The button to open modal -->
+                    <label th:for="${'my_modal_' + chatroom.id}" class="btn" th:text="'Enter Chat Room'"></label>
+                    <!-- Modal -->
+                    <input type="checkbox" th:id="${'my_modal_' + chatroom.id}" class="modal-toggle" />
+                    <div class="modal" role="dialog">
+                        <div class="modal-box">
+                            <h3 class="font-bold text-lg">Enter Password</h3>
+                            <form class="passwordForm" th:action="@{|/chat/enter|}" method="post">
+                                <input type="hidden" name="roomId" class="roomId" th:value="${chatroom.id}" />
+                                <input type="password" name="password" class="password" placeholder="Enter password" />
+                                <button type="submit">Enter</button>
+                            </form>
+                            <div class="modal-action">
+                                <label th:for="${'my_modal_' + chatroom.id}" class="btn">Close</label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <script>
-                    // Set room id for each modal
-                    document.querySelector('${chatroom.id}').addEventListener('click', function() {
-                        document.getElementById('roomId_${chatroom.id}').value = [[${chatroom.id}]];
-                    });
+                    <script>
+                        // Set room id for each modal
+                        document.querySelector('${chatroom.id}').addEventListener('click', function () {
+                            document.getElementById('roomId_${chatroom.id}').value = [[${ chatroom.id }]];
+                        });
 
-                    // Form submit event for each modal
-                    document.querySelector('.passwordForm').addEventListener('submit', function(event) {
-                        event.preventDefault(); // Prevent default form submission
+                        // Form submit event for each modal
+                        document.querySelector('.passwordForm').addEventListener('submit', function (event) {
+                            event.preventDefault(); // Prevent default form submission
 
-                        var roomId = document.querySelector('.roomId').value;
-                        var password = document.querySelector('.password').value;
+                            var roomId = document.querySelector('.roomId').value;
+                            var password = document.querySelector('.password').value;
 
-                        // Send AJAX request to validate password
-                        fetch('/chat/validatePassword?roomId=' + roomId + '&password=' + password)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.valid) {
-                                    // Redirect to chat room if password is valid
-                                    window.location.href = '/chat/talk/' + roomId;
-                                } else {
-                                    // Show error message or handle invalid password
-                                    console.log('Invalid password');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    });
-                </script>
-            </li>
-        </ul>
+                            // Send AJAX request to validate password
+                            fetch('/chat/validatePassword?roomId=' + roomId + '&password=' + password)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.valid) {
+                                        // Redirect to chat room if password is valid
+                                        window.location.href = '/chat/talk/' + roomId;
+                                    } else {
+                                        // Show error message or handle invalid password
+                                        console.log('Invalid password');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                        });
+                    </script>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
 </body>
+
 </html>
