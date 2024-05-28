@@ -28,7 +28,7 @@
                     <button class="btn" onclick="my_modal_7.showModal()">친구목록</button>
                     <dialog id="my_modal_7" class="modal modal-bottom sm:modal-middle">
                         <div class="modal-box">
-                            <div th:each="List : ${friendList}">
+                            <div th:each="List : ${friendList}" class="flex flex-col font-bold w-auto border-2 border-black gap-7">
                                 <p th:if="${List.friend1.nickname == user.nickname}" th:text="${List.friend2.nickname}">
                                 </p>
                                 <p th:if="${List.friend2.nickname == user.nickname}" th:text="${List.friend1.nickname}">

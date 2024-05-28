@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Redirect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+<div class="container mx-auto py-8">
+    <div class="flex justify-center mb-4">
+        <div class="form-control">
+            <input type="text" id="searchInput" placeholder="Search" class="input input-bordered w-24 md:w-auto"/>
+            <button onclick="performSearch()" class="btn btn-primary ml-2">Search</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function performSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+
+        if (query === 'calendar') {
+            window.location.href = '/calendar';
+        } else if (query === 'board') {
+            window.location.href = '/board';
+        } else if (query === 'profile') {
+            window.location.href = '/profile';
+        } else {
+            alert('No matching page found');
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,11 +1,11 @@
 <html layout:decorate="~{layout2}">
-<div layout:fragment="content" class="container my-3">
+<div layout:fragment="content" class="container mx-auto my-3">
 
     <!-- 달력 및 세부 내용 -->
-    <div class="flex w-full">
+    <div class="flex flex-wrap">
         <!-- 달력 -->
-        <div class="flex-grow place-items-center lg:w-1/2">
-            <h1>일정 달력</h1>
+        <div class="w-full md:w-1/2 p-4">
+            <h1>공용 달력</h1>
             <div id='calendar'></div>
             <br>
             <!-- 이벤트 추가 모달 -->
@@ -27,14 +27,13 @@
                 </div>
             </div>
         </div>
-        <div class="divider lg:divider-horizontal"></div>
         <!-- 세부내용 -->
-        <div class="flex flex-col">
+        <div class="w-full md:w-1/2 p-4">
             <!-- 버튼 및 이번 달 일정 -->
             <div class="w-full">
                 <div class="flex-cole">
                     <!-- 버튼 -->
-                    <div class="flex justify-between mb-4">
+                    <div class="flex w-full justify-between mb-4">
                         <form action="/public" method="get">
                             <input type="hidden" name="targetMonth" th:value="${prevMonth}">
                             <button type="submit"
@@ -52,7 +51,7 @@
                     </div>
                     <!-- 일정 리스트 -->
                     <div
-                        style="overflow-x: auto; width: 700px; height: 500px; border-radius: 10px; border: 0.3px solid lightgray;">
+                            style="overflow-x: auto; width: 100%; height: 500px; border-radius: 10px; border: 0.3px solid lightgray;">
                         <table class="table" style="border-collapse: collapse; width: 100%;">
                             <!-- head -->
                             <thead style="background-color: lightgray;">
