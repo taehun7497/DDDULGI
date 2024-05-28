@@ -13,12 +13,14 @@
                     src="/1715046707.gif" loop=infinite />
                 <div class="flex items-center space-x-2 mt-2">
                     <li class="flex border-y py-2">
-                        <span class="font-bold w-24">Nickname:</span>
+                        <span class="font-bold w-auto inline-block">Nickname : </span>
                         <span class="text-gray-700" th:text="${user.nickname}"></span>
                     </li>
                 </div>
-                <p class="text-gray-700">부서명</p>
-                <p class="text-sm text-gray-500"></p>
+                <li class="flex border-y py-2">
+                    <span class="font-bold w-auto inline-block">Department : </span>
+                    <span class="text-gray-700" th:text="${user.department}"></span>
+                </li>
             </div>
             <div class="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
                 <div class="flex items-center space-x-4 mt-2">

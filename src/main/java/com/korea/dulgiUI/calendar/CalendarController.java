@@ -3,13 +3,19 @@ package com.korea.dulgiUI.calendar;
 import com.korea.dulgiUI.Event.Event;
 import com.korea.dulgiUI.Event.EventForm;
 import com.korea.dulgiUI.Event.EventService;
+import com.korea.dulgiUI.User.SiteUser;
+import com.korea.dulgiUI.User.UserDetail;
+import com.korea.dulgiUI.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,7 +28,7 @@ public class CalendarController {
 
     private final CalendarService calendarService;
     private final EventService eventService;
-
+    private final UserService userService;
     @GetMapping("/modify/{eventId}")
     public ResponseEntity<?> getEventById(@PathVariable Long eventId) {
         Event event = eventService.findById(eventId);
@@ -55,7 +61,7 @@ public class CalendarController {
 
     @GetMapping("/{calendarId}")
     public String viewCalendar(Model model, @PathVariable(name = "calendarId") String calendarId,
-                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth) {
+                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth, @AuthenticationPrincipal UserDetails userDetails) {
         Long parsedCalendarId;
         try {
             parsedCalendarId = Long.parseLong(calendarId);
@@ -77,11 +83,20 @@ public class CalendarController {
 
         List<Event> eventsForMonth = this.eventService.getEventsForMonth(events, targetMonth);
 
+        Long userCalendar = null;
+
+        if (userDetails != null) {
+            SiteUser user = userService.getUser(userDetails.getUsername());
+            userCalendar = user.getUserCalendar().getId();
+        }
+
+        SiteUser siteUser = userService.getUser(userDetails.getUsername());
         model.addAttribute("targetMonth", targetMonth);
         model.addAttribute("prevMonth", prevMonth);
         model.addAttribute("nextMonth", nextMonth);
         model.addAttribute("calendarId", parsedCalendarId);
         model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
+        model.addAttribute("userCalendar", userCalendar);
 
         return "CalendarForm";
     }

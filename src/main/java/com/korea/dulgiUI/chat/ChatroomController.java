@@ -5,6 +5,7 @@ import com.korea.dulgiUI.User.UserDetail;
 import com.korea.dulgiUI.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,18 @@ public class ChatroomController {
     private final UserService userService;
 
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+
+        Long userCalendar = null;
+
+        if (userDetails != null) {
+            SiteUser user = userService.getUser(userDetails.getUsername());
+            userCalendar = user.getUserCalendar().getId();
+        }
 
         List<ChatRoom> chatRoomList = chatroomService.findAll();
         model.addAttribute("chatroomList", chatRoomList);
+        model.addAttribute("userCalendar", userCalendar);
         return "ChatList";
     }
 

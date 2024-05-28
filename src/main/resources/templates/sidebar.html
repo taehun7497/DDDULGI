@@ -36,7 +36,7 @@
         <li>
             <!--            <a th:classappend="${category} == 'Calendar' ? 'active'" th:href="@{|/user/calendar/${calendarId}|}">-->
             <a th:classappend="${category} == 'Calendar' ? 'active'"
-                th:href="${parsedCalendarId != null ? '/user/calendar/' + parsedCalendarId : '#'}">
+                th:href="${userCalendar != null ? '/user/calendar/' + userCalendar : '#'}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="green" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"

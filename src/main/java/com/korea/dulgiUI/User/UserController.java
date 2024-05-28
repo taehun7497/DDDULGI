@@ -49,11 +49,16 @@ public class UserController {
         List<Answer> answerList = this.answerService.getListByAuthor(user);
         List<FriendShip> acceptUserList = friendShipService.findAccept(user.getId());
         List<FriendShip> friendList = friendShipService.findFriendAll(user.getId());
+
+        Long userCalendar = user.getUserCalendar().getId();
+
+
         model.addAttribute("answers", answerList);
         model.addAttribute("questions", questionList);
         model.addAttribute("user", user);
         model.addAttribute("acceptUser", acceptUserList);
         model.addAttribute("friendList", friendList);
+        model.addAttribute("userCalendar", userCalendar);
         return "user_info";
     }
 
@@ -181,19 +186,27 @@ public class UserController {
         }
     }
 
+//    @PostMapping("/edit")
+//    public String update(Principal principal,
+//                         @RequestParam("nickname") String nickname) {
+//        SiteUser user = userService.getUser(principal.getName());
+//        if (user.getNickname() == null)
+//            userService.updateUser(user, user.getUsername(), user.getDepartment(), user.getMobile(), user.getEmail());
+//
+//        if (user.getNickname().equals(nickname)) {
+//            return "redirect:/";
+//        } else {
+//            userService.updateUser(user, user.getUsername(), user.getDepartment(), user.getMobile(), user.getEmail());
+//            return "redirect:/user/info";
+//        }
+//    }
+
     @PostMapping("/edit")
     public String update(Principal principal,
-                         @RequestParam("nickname") String nickname) {
+                         @ModelAttribute SiteUser updatedUser) {
         SiteUser user = userService.getUser(principal.getName());
-        if (user.getNickname() == null)
-            userService.updateUser(user, user.getUsername());
-
-        if (user.getNickname().equals(nickname)) {
-            return "redirect:/";
-        } else {
-            userService.updateUser(user, nickname);
-            return "redirect:/user/info";
-        }
+        userService.updateUser(user, updatedUser.getNickname(), updatedUser.getDepartment(), updatedUser.getMobile(), updatedUser.getEmail());
+        return "redirect:/user/info";
     }
 
     @GetMapping("/calendar/{calendarId}")

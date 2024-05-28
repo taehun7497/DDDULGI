@@ -9,6 +9,7 @@ import java.util.Collection;
 public class UserDetail implements UserDetails {
     private final SiteUser siteUser;
 
+
     public UserDetail(SiteUser siteUser) {
         this.siteUser = siteUser;
     }

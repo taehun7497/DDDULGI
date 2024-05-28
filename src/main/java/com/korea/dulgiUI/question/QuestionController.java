@@ -54,11 +54,11 @@ public class QuestionController {
         // 특정 페이지에 해당하는 게시물 목록을 검색어와 함께 가져옵니다.
         Page<Question> paging = this.questionService.getList(page, kw, category1);
 
-        Long parsedCalendarId = null;
+        Long userCalendar = null;
 
         if (userDetails != null) {
             SiteUser user = userService.getUser(userDetails.getUsername());
-            parsedCalendarId = user.getUserCalendar().getId();
+            userCalendar = user.getUserCalendar().getId();
         }
 
         // Model 객체는 자바 클래스와 템플릿 간의 연결고리 역할을 한다. Model 객체에 값을 담아두면 템플릿에서 그 값을 사용할 수 있다.
@@ -66,7 +66,7 @@ public class QuestionController {
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("category", category);
-        model.addAttribute("parsedCalendarId", parsedCalendarId);
+        model.addAttribute("userCalendar", userCalendar);
 
         // 뷰 이름인 "question_list"를 반환합니다.
         return "question_list";
@@ -99,10 +99,18 @@ public class QuestionController {
         // 주어진 질문에 대한 답변 목록을 가져옵니다.
         Page<Answer> paging = this.answerService.getList(page, question, so);
 
+        Long userCalendar = null;
+
+        if (principal != null) {
+            SiteUser user = userService.getUser(principal.getName());
+            userCalendar = user.getUserCalendar().getId();
+        }
+
         // Model 객체에 조회된 질문, 답변 목록, 정렬 옵션을 담아서 뷰로 전달합니다.
         model.addAttribute("paging", paging);
         model.addAttribute("question", question);
         model.addAttribute("so", so);
+        model.addAttribute("userCalendar", userCalendar);
 
         // 뷰 이름인 "question_detail"을 반환합니다.
         return "question_detail";

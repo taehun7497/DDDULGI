@@ -4,7 +4,9 @@ import com.korea.dulgiUI.User.SiteUser;
 import com.korea.dulgiUI.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -16,9 +18,13 @@ public class FriendShipController {
     private final FriendShipService friendShipService;
 
     @GetMapping("/add")
-    public String friend(Principal principal, @RequestParam("nickname") String nickname) {
+    public String friend(Principal principal, @RequestParam("nickname") String nickname, Model model, RedirectAttributes redirectAttributes) {
         SiteUser friend1 = this.userService.getUser(principal.getName());
         SiteUser friend2 = this.userService.getUserNickname(nickname);
+        if(friend2 == null){
+            model.addAttribute("error", "djlaskd");
+            return "user_info";
+        }
 
         friendShipService.add(friend1, friend2);
 

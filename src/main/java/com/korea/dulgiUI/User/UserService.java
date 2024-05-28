@@ -20,9 +20,9 @@ public class UserService {
                            String nickname,
                            String email,
                            String password,
+                           String department,
                            String gender,
-                           String mobile,
-                           String department) {
+                           String mobile) {
 
         SiteUser user = new SiteUser();
         //BCrypt 해싱함수를 사용해서 암호화
@@ -102,8 +102,23 @@ public class UserService {
         return this.passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public void updateUser(SiteUser siteUser, String nickname){
-        siteUser.setNickname(nickname);
-        userRepository.save(siteUser);
+//    public void updateUser(SiteUser siteUser,
+//                           String nickname,
+//                           String mobile,
+//                           String email,
+//                           String department) {
+//        siteUser.setNickname(nickname);
+//        siteUser.setMobile(mobile);
+//        siteUser.setEmail(email);
+//        siteUser.setDepartment(department);
+//        userRepository.save(siteUser);
+//    }
+
+    public void updateUser(SiteUser user, String nickname, String department, String mobile, String email) {
+        user.setNickname(nickname);
+        user.setDepartment(department);
+        user.setMobile(mobile);
+        user.setEmail(email);
+        userRepository.save(user); // 유저 정보 업데이트 후 저장
     }
 }
