@@ -154,26 +154,32 @@
     <!-- 답변 반복 끝  -->
     <!-- 페이징처리 시작 -->
     <div th:if="${!paging.isEmpty()}">
-        <ul class="pagination justify-center">
-            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                <a class="page-link"
-                   href="javascript:void(0)" th:data-page="${paging.number-1}">
-                    <span>이전</span>
+        <ul class="flex justify-center">
+            <li class="page-item">
+                <a class="page-link px-4 py-2 border border-gray-300 rounded-md"
+                   th:classappend="${!paging.hasPrevious} ? 'opacity-50' : ''"
+                   th:href="${paging.hasPrevious ? '?page=' + (paging.number-1) : '?page=0'}">
+                    이전
                 </a>
             </li>
             <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
                 th:if="${page >= paging.number-5 and page <= paging.number+5}"
-                th:classappend="${page == paging.number} ? 'active'"
+                th:classappend="${page == paging.number} ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'"
                 class="page-item">
-                <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+                <a th:text="${page}" class="page-link px-4 py-2 border border-gray-300 rounded-md"
+                   th:href="${page == paging.number ? '#' : '?page=' + page}"
+                   th:attr="data-page=${page}"></a>
             </li>
-            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}">
-                    <span>다음</span>
+            <li class="page-item">
+                <a class="page-link px-4 py-2 border border-gray-300 rounded-md"
+                   th:classappend="${!paging.hasNext} ? 'opacity-50' : ''"
+                   th:href="${paging.hasNext ? '?page=' + (paging.number+1) : '?page=' + (paging.totalPages - 1)}">
+                    다음
                 </a>
             </li>
         </ul>
     </div>
+
     <!-- 페이징처리, 답변 정렬 끝 -->
     <form th:action="@{|/question/detail/${question.id}#answer_start|}" method="get" id="searchForm">
         <input type="hidden" id="page" name="page" th:value="${paging.number}">

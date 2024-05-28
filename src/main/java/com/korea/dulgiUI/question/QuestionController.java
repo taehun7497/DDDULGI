@@ -1,7 +1,6 @@
 package com.korea.dulgiUI.question;
 
 import com.korea.dulgiUI.User.SiteUser;
-import com.korea.dulgiUI.User.UserDetail;
 import com.korea.dulgiUI.User.UserService;
 import com.korea.dulgiUI.answer.Answer;
 import com.korea.dulgiUI.answer.AnswerForm;
@@ -89,6 +88,7 @@ public class QuestionController {
 
         // 주어진 ID에 해당하는 질문을 데이터베이스에서 조회합니다.
         Question question = this.questionService.getQuestion(id);
+
 
         // 조회 수 증가 (비로그인 & 작성자 제외)
         // 로그인한 사용자가 질문의 작성자가 아닌 경우에만 조회 수를 증가시킵니다.

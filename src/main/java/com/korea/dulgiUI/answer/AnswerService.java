@@ -34,7 +34,7 @@ public class AnswerService {
         } else { // 그 외의 경우, 즉 "recent"인 경우
             sorts.add(Sort.Order.desc("createDate")); // 최신순으로 정렬
         }
-        Pageable pageable = PageRequest.of(page, 3, Sort.by(sorts)); // 페이지와 정렬 조건으로 페이지 요청 생성
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts)); // 페이지와 정렬 조건으로 페이지 요청 생성
         return this.answerRepository.findAllByQuestion(question, pageable); // 질문에 해당하는 답변 목록을 페이지별로 가져와 반환
     }
 
