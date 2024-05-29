@@ -29,6 +29,8 @@ public class ChatroomController {
         if (userDetails != null) {
             SiteUser user = userService.getUser(userDetails.getUsername());
             userCalendar = user.getUserCalendar().getId();
+            String url = user.getProfile_image();
+            model.addAttribute("url", url);
         }
 
         List<ChatRoom> chatRoomList = chatroomService.findAll();

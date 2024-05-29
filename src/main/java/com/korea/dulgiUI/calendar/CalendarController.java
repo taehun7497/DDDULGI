@@ -88,6 +88,8 @@ public class CalendarController {
         if (userDetails != null) {
             SiteUser user = userService.getUser(userDetails.getUsername());
             userCalendar = user.getUserCalendar().getId();
+            String url = user.getProfile_image();
+            model.addAttribute("url", url);
         }
 
         SiteUser siteUser = userService.getUser(userDetails.getUsername());

@@ -14,11 +14,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -52,6 +56,8 @@ public class UserController {
 
         Long userCalendar = user.getUserCalendar().getId();
 
+        if (!model.containsAttribute("url") || model.getAttribute("url") == null)
+            model.addAttribute("url", user.getProfile_image());
 
         model.addAttribute("answers", answerList);
         model.addAttribute("questions", questionList);
@@ -186,21 +192,6 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/edit")
-//    public String update(Principal principal,
-//                         @RequestParam("nickname") String nickname) {
-//        SiteUser user = userService.getUser(principal.getName());
-//        if (user.getNickname() == null)
-//            userService.updateUser(user, user.getUsername(), user.getDepartment(), user.getMobile(), user.getEmail());
-//
-//        if (user.getNickname().equals(nickname)) {
-//            return "redirect:/";
-//        } else {
-//            userService.updateUser(user, user.getUsername(), user.getDepartment(), user.getMobile(), user.getEmail());
-//            return "redirect:/user/info";
-//        }
-//    }
-
     @PostMapping("/edit")
     public String update(Principal principal,
                          @ModelAttribute SiteUser updatedUser) {
@@ -212,7 +203,8 @@ public class UserController {
     @GetMapping("/calendar/{calendarId}")
     public String personalCalendar(Model model,
                                    @PathVariable(name = "calendarId", required = false) String calendarId,
-                                   @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth) {
+                                   @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth,
+                                   @AuthenticationPrincipal UserDetails userDetails) {
         if (calendarId == null || calendarId.isEmpty()) {
             // 기본 calendarId를 설정합니다. 예: "1"
             calendarId = "1";
@@ -239,15 +231,40 @@ public class UserController {
 
         List<Event> eventsForMonth = this.eventService.getEventsForMonth(events, targetMonth);
 
+        if (userDetails != null) {
+            SiteUser user = userService.getUser(userDetails.getUsername());
+            String url = user.getProfile_image();
+            model.addAttribute("url", url);
+        }
+
         model.addAttribute("calendarId", calendarId);
         model.addAttribute("targetMonth", targetMonth);
         model.addAttribute("prevMonth", prevMonth);
         model.addAttribute("nextMonth", nextMonth);
         model.addAttribute("parsedCalendarId", parsedCalendarId); // 모델에 추가된 올바른 이름
-
         model.addAttribute("eventsForMonth", eventsForMonth); // 이벤트 목록을 모델에 추가
 
         return "UserCalendar";
+    }
+
+    @PostMapping("/imageform")
+    public String imageform(@RequestParam("file") MultipartFile file,
+                            RedirectAttributes redirectAttributes) {
+        String url = null;
+        if (file.getContentType().contains("image"))
+            url = userService.temp_save(file);
+        redirectAttributes.addFlashAttribute("url", url);
+        return "redirect:/user/info";
+    }
+
+    @PostMapping("/imagesaveform")
+    public String imagesaveform(Principal principal,
+                                @RequestParam(value = "url", defaultValue = "") String url) {
+        if (url.isBlank())
+            return "redirect:/user/info";
+        SiteUser siteUser = userService.getUser(principal.getName());
+        userService.save(siteUser, url);
+        return "redirect:/user/info";
     }
 
 

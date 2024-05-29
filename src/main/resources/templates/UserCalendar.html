@@ -190,14 +190,16 @@
         function addEventToCalendar(calendar) { // calendar를 함수 인수로 받아옵니다.
             var calendar_id = document.getElementById('calendar_id').value;
             var title = document.getElementById('eventTitle').value;
-            var start = document.getElementById('eventStart').value;
-            var end = document.getElementById('eventEnd').value;
+            var start = new Date(document.getElementById('eventStart').value);
+            var end = new Date(document.getElementById('eventEnd').value);
+            start.setTime(start.getTime() + (9 * 60 * 60 * 1000));
+            end.setTime(end.getTime() + (9 * 60 * 60 * 1000));
 
             // 이벤트 객체를 생성합니다.
             var event = {
                 title: title,
-                start: new Date(start),
-                end: new Date(end)
+                start: start,
+                end: end
             };
 
             fetch('/calendar/events', {
@@ -262,12 +264,15 @@
             var modifiedEventStart = document.getElementById('modifiedEventStart_' + eventId).value;
             var modifiedEventEnd = document.getElementById('modifiedEventEnd_' + eventId).value;
 
+            modifiedEventStart.setTime(modifiedEventStart.getTime() + (9 * 60 * 60 * 1000));
+            modifiedEventEnd.setTime(modifiedEventEnd.getTime() + (9 * 60 * 60 * 1000));
+
             console.log("Saving event:", eventId, modifiedEventTitle, modifiedEventStart, modifiedEventEnd);
 
             var updatedEvent = {
                 title: modifiedEventTitle,
-                startDate: modifiedEventStart,
-                endDate: modifiedEventEnd
+                startDate: new Date(modifiedEventStart).toISOString(),
+                endDate: new Date(modifiedEventEnd).toISOString()
             };
 
             console.log("Updated event data:", updatedEvent);

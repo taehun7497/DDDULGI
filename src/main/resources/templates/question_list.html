@@ -1,7 +1,6 @@
 <html layout:decorate="~{layout2}">
 <div layout:fragment="content" class="container-fluid my-3">
     <div class="flex justify-between mb-3">
-        <!--            <p>Content Size: <span th:text="${contentSize}"></span></p>-->
         <a th:href="@{|/question/create/${category}|}" class="btn btn-primary">질문 등록하기</a>
         <div class="flex items-center">
             <input type="text" id="search_kw" class="form-input" th:value="${kw}" placeholder="검색 키워드">

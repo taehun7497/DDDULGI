@@ -1,19 +1,19 @@
 <html layout:decorate="~{layout2}">
 <div layout:fragment="content" class="container mx-auto my-3">
 
-    <!-- 달력 및 세부 내용 -->
+    <!-- 전체를 감싸는 flex 컨테이너 -->
     <div class="flex flex-wrap">
-        <!-- 달력 -->
+        <!-- 캘린더 구역 -->
         <div class="w-full md:w-1/2 p-4">
-            <h1>공용 달력</h1>
+            <h1>개인 달력</h1>
             <div id='calendar'></div>
             <br>
             <!-- 이벤트 추가 모달 -->
             <div id="eventModal"
-                style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
+                 style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
                 <div>
                     <label>달력 번호:</label>
-                    <input type="number" id="calendar_id"><br> <!-- 공용 캘린더 ID 고정 -->
+                    <input type="number" id="calendar_id"><br>
                     <label>제목:</label>
                     <input type="text" id="eventTitle"><br>
                     <label>시작 시간:</label>
@@ -21,31 +21,34 @@
                     <label>종료 시간:</label>
                     <input type="datetime-local" id="eventEnd"><br>
                     <button id="saveEvent"
-                        style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
+                            style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
                         이벤트 저장
                     </button>
                 </div>
             </div>
         </div>
-        <!-- 세부내용 -->
+
+        <!-- 세부내용 구역 -->
         <div class="w-full md:w-1/2 p-4">
             <!-- 버튼 및 이번 달 일정 -->
             <div class="w-full">
                 <div class="flex-cole">
                     <!-- 버튼 -->
                     <div class="flex w-full justify-between mb-4">
-                        <form action="/public" method="get">
+                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}" method="get">
+                            <input type="hidden" name="calendarId" th:value="${calendarId}">
                             <input type="hidden" name="targetMonth" th:value="${prevMonth}">
                             <button type="submit"
-                                class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">이전 달
+                                    class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">이전 달
                             </button>
                         </form>
                         <h1 class="text-xl font-semibold" th:text="${targetMonth + ' 월 일정 리스트'}"></h1>
                         <input type="hidden" name="targetMonth" th:value="${targetMonth}">
-                        <form action="/public" method="get">
+                        <form action="#" th:action="@{/calendar/{calendarId}(calendarId=${calendarId})}" method="get">
+                            <input type="hidden" name="calendarId" th:value="${calendarId}">
                             <input type="hidden" name="targetMonth" th:value="${nextMonth}">
                             <button type="submit"
-                                class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">다음 달
+                                    class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-800">다음 달
                             </button>
                         </form>
                     </div>
@@ -55,61 +58,61 @@
                         <table class="table" style="border-collapse: collapse; width: 100%;">
                             <!-- head -->
                             <thead style="background-color: lightgray;">
-                                <tr>
-                                    <th style="width: 10%;">번호</th>
-                                    <th style="width: 40%;">일정</th>
-                                    <th style="width: 30%;">날짜</th>
-                                    <th style="width: 20%;">수정</th>
-                                </tr>
+                            <tr>
+                                <th style="width: 10%;">번호</th>
+                                <th style="width: 40%;">일정</th>
+                                <th style="width: 30%;">날짜</th>
+                                <th style="width: 20%;">수정</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="event, iterStat : ${eventsForMonth}" class="flex-wrap w-full lg:w-3/4">
-                                    <!-- 이벤트의 순서와 제목, 기간 출력 -->
-                                    <td th:text="${iterStat.index + 1 }"></td>
-                                    <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
-                                        title="${event.title}" th:text="${event.title}"></td>
-                                    <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
-                                        title="${event.startDate} + '~' + ${event.endDate}"
-                                        th:text="${event.startDate} + '~' + ${event.endDate}"></td>
-                                    <td
+                            <tr th:each="event, iterStat : ${eventsForMonth}" class="flex-wrap w-full lg:w-3/4">
+                                <!-- 이벤트의 순서와 제목, 기간 출력 -->
+                                <td th:text="${iterStat.index + 1 }"></td>
+                                <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
+                                    title="${event.title}" th:text="${event.title}"></td>
+                                <td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;"
+                                    title="${event.startDate} + '~' + ${event.endDate}"
+                                    th:text="${event.startDate} + '~' + ${event.endDate}"></td>
+                                <td
                                         style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">
-                                        사이트 정보
-                                    </td>
-                                    <td> <!-- 수정 버튼 부분 -->
-                                        <!--onclick은 자바스크립트라 타임리프 문법 사용 x-->
-                                        <button class="btn" onclick="openModal(this)" th:data-id="${event.id}">Open
-                                            modal</button>
-                                        <!-- 모달 요소 -->
-                                        <dialog th:id="${'eventModal_' + event.id}" class="modal">
-                                            <div class="modal-box">
-                                                <h3 class="font-bold text-lg">Modify Event</h3>
-                                                <p class="py-4">Press ESC key or click the button below to close</p>
-                                                <div class="modal-action">
-                                                    <form method="dialog">
-                                                        <!-- 수정 양식 추가 -->
-                                                        <label>Event Title:</label>
-                                                        <input type="text" th:id="${'modifiedEventTitle_'+event.id}">
-                                                        <br>
-                                                        <label>Start Time:</label>
-                                                        <input type="datetime-local"
-                                                            th:id="${'modifiedEventStart_'+event.id}">
-                                                        <br>
-                                                        <label>End Time:</label>
-                                                        <input type="datetime-local"
-                                                            th:id="${'modifiedEventEnd_'+event.id}">
-                                                        <br>
-                                                        <!-- 수정 완료 버튼 -->
-                                                        <button class="btn" onclick="saveModifiedEvent(this)"
+                                    사이트 정보
+                                </td>
+                                <td> <!-- 수정 버튼 부분 -->
+                                    <!--onclick은 자바스크립트라 타임리프 문법 사용 x-->
+                                    <button class="btn" onclick="openModal(this)" th:data-id="${event.id}">Open
+                                        modal</button>
+                                    <!-- 모달 요소 -->
+                                    <dialog th:id="${'eventModal_' + event.id}" class="modal">
+                                        <div class="modal-box">
+                                            <h3 class="font-bold text-lg">Modify Event</h3>
+                                            <p class="py-4">Press ESC key or click the button below to close</p>
+                                            <div class="modal-action">
+                                                <form method="dialog">
+                                                    <!-- 수정 양식 추가 -->
+                                                    <label>Event Title:</label>
+                                                    <input type="text" th:id="${'modifiedEventTitle_'+event.id}">
+                                                    <br>
+                                                    <label>Start Time:</label>
+                                                    <input type="datetime-local"
+                                                           th:id="${'modifiedEventStart_'+event.id}">
+                                                    <br>
+                                                    <label>End Time:</label>
+                                                    <input type="datetime-local"
+                                                           th:id="${'modifiedEventEnd_'+event.id}">
+                                                    <br>
+                                                    <!-- 수정 완료 버튼 -->
+                                                    <button class="btn" onclick="saveModifiedEvent(this)"
                                                             th:data-id="${event.id}">저장</button>
-                                                        <!-- 모달 닫기 버튼 -->
-                                                        <button class="btn" onclick="closeModal(this)"
+                                                    <!-- 모달 닫기 버튼 -->
+                                                    <button class="btn" onclick="closeModal(this)"
                                                             th:data-id="${'eventModal_' + event.id}">Close</button>
-                                                    </form>
-                                                </div>
+                                                </form>
                                             </div>
-                                        </dialog>
-                                    </td>
-                                </tr>
+                                        </div>
+                                    </dialog>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -117,7 +120,7 @@
                 <!-- 일정 추가 버튼 -->
                 <div class="flex justify-between mt-4">
                     <button id="addEventBtn"
-                        style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
+                            style="border-radius: 10px; padding: 10px 20px; border: none; background-color: black; color: white; text-align: center; display: inline-block; font-size: 16px; cursor: pointer;">
                         일정추가
                     </button>
                 </div>
@@ -136,17 +139,17 @@
             });
             calendar.render(); // FullCalendar 인스턴스를 렌더링합니다.
 
-            const publicCalendarId = 1; // 고정된 공용 캘린더 ID 사용
+            const calendarId = window.location.pathname.split('/').pop(); // URL에서 ID 추출
 
-            // 공용 캘린더 ID로 이벤트 불러오기
-            fetchEventsForCalendar(publicCalendarId, calendar);
+            // 캘린더 ID로 이벤트 불러오기
+            fetchEventsForCalendar(calendarId, calendar);
 
             document.getElementById('addEventBtn').addEventListener('click', function () {
                 document.getElementById('eventModal').style.display = 'block';
             });
 
             document.getElementById('saveEvent').addEventListener('click', function () {
-                addEventToCalendar(publicCalendarId, calendar); // 고정된 공용 캘린더 ID 사용
+                addEventToCalendar(calendar);
             });
         });
 
@@ -160,13 +163,13 @@
                     const contentType = response.headers.get("content-type");
                     if (!response.ok || !contentType || !contentType.includes("application/json")) {
                         return response.text().then(text => {
-                            throw new Error('서버에서 정상적인 JSON 응답이 아닙니다: ' + text);
+                            throw new Error('서버에서 정상적인 JSON 응답을 받지 못했습니다: ' + text);
                         });
                     }
                     return response.json();
                 })
                 .then(eventsData => {
-                    // 가져온 이벤트 데이터를 events 변수에 저장
+                    // 이벤트 데이터를 events 변수에 저장
                     events = eventsData;
 
                     // FullCalendar에 이벤트 추가
@@ -184,7 +187,8 @@
                 });
         }
 
-        function addEventToCalendar(calendarId, calendar) { // calendarId를 함수 인수로 받아옵니다.
+        function addEventToCalendar(calendar) { // calendar를 함수 인수로 받아옵니다.
+            var calendar_id = document.getElementById('calendar_id').value;
             var title = document.getElementById('eventTitle').value;
             var start = new Date(document.getElementById('eventStart').value);
             var end = new Date(document.getElementById('eventEnd').value);
@@ -197,13 +201,14 @@
                 start: start,
                 end: end
             };
+
             fetch('/calendar/events', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    calendar_id: calendarId, // 고정된 공용 캘린더 ID 사용
+                    calendar_id: parseInt(calendar_id, 10),
                     title: title,
                     startDate: event.start.toISOString(),
                     endDate: event.end.toISOString()
@@ -216,7 +221,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    calendar.addEvent({
+                    calendar.addEvent({ // calendar.addEvent를 호출합니다.
                         title: data.title,
                         start: data.startDate,
                         end: data.endDate
@@ -224,7 +229,7 @@
 
                     // 입력 필드 초기화 및 이벤트 모달 숨기기
                     document.getElementById('eventModal').style.display = 'none';
-                    document.getElementById('calendar_id').value = '1'; // 고정된 공용 캘린더 ID 사용
+                    document.getElementById('calendar_id').value = '';
                     document.getElementById('eventTitle').value = '';
                     document.getElementById('eventStart').value = '';
                     document.getElementById('eventEnd').value = '';
@@ -256,8 +261,8 @@
         function saveModifiedEvent(button) {
             var eventId = button.getAttribute('data-id');
             var modifiedEventTitle = document.getElementById('modifiedEventTitle_' + eventId).value;
-            var modifiedEventStart = new Date(document.getElementById('modifiedEventStart_' + eventId).value);
-            var modifiedEventEnd = new Date(document.getElementById('modifiedEventEnd_' + eventId).value);
+            var modifiedEventStart = document.getElementById('modifiedEventStart_' + eventId).value;
+            var modifiedEventEnd = document.getElementById('modifiedEventEnd_' + eventId).value;
 
             modifiedEventStart.setTime(modifiedEventStart.getTime() + (9 * 60 * 60 * 1000));
             modifiedEventEnd.setTime(modifiedEventEnd.getTime() + (9 * 60 * 60 * 1000));

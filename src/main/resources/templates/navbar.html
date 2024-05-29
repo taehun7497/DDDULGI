@@ -6,14 +6,12 @@
         <div class="flex-none gap-2">
             <div class="form-control">
                 <input type="text" id="searchInput" placeholder="Search" class="input input-bordered w-24 md:w-auto"/>
-                <button onclick="performSearch()" class="btn btn-primary ml-2">Search</button>
             </div>
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
-                        <!--                        <img alt="Tailwind CSS Navbar component"-->
-                        <!--                             src="/dulgi.jpg"/>-->
-                        <img alt="Tailwind CSS Navbar component" src="/1715046707.gif" loop=infinite/>
+                        <img alt="Tailwind CSS Navbar component" class="w-40 border-4 border-white rounded-full"
+                             th:src="${url != null ? url : '/1715046707.gif'}" loop="infinite"/>
                     </div>
                 </div>
                 <ul tabindex="0"
@@ -34,17 +32,25 @@
 </nav>
 
 <script>
+    document.getElementById('searchInput').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
+    });
+
     function performSearch() {
         const query = document.getElementById('searchInput').value.toLowerCase();
 
         if (query === '공용 캘린더') {
-            window.location.href = '/calendar';
+            window.location.href = '/calendar/0';
         } else if (query === '자유게시판') {
-            window.location.href = '/board';
+            window.location.href = '/question/list/qna';
+        } else if (query === '개인 캘린더') {
+            window.location.href = '/calendar/${calendarId}';
         } else if (query === '프로필') {
-            window.location.href = '/profile';
+            window.location.href = '/user/info';
         } else if (query === '채팅') {
-            window.location.href = '/profile';
+            window.location.href = '/chat/list';
         } else {
             alert('No matching page found');
         }

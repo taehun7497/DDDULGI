@@ -36,7 +36,7 @@ public class QSiteUser extends EntityPathBase<SiteUser> {
 
     public final StringPath password = createString("password");
 
-    public final ArrayPath<byte[], Byte> profileImage = createArray("profileImage", byte[].class);
+    public final StringPath profile_image = createString("profile_image");
 
     public final com.korea.dulgiUI.calendar.QUserCalendar userCalendar;
 

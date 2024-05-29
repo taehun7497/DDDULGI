@@ -33,17 +33,7 @@ public class SiteUser {
 
     private String department;
 
-    @Lob
-    private byte[] profileImage;
-
-    public String getBase64EncodedProfileImage() {
-        if (profileImage != null) {
-            return Base64.getEncoder().encodeToString(profileImage);
-        } else {
-            // 프로필 이미지가 없는 경우 기본 이미지를 반환하거나 빈 문자열을 반환할 수 있습니다.
-            return ""; // 빈 문자열 반환
-        }
-    }
+    private String profile_image;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "calendar_id")

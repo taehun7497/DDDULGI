@@ -55,9 +55,12 @@ public class QuestionController {
 
         Long userCalendar = null;
 
+
         if (userDetails != null) {
             SiteUser user = userService.getUser(userDetails.getUsername());
             userCalendar = user.getUserCalendar().getId();
+            String url = user.getProfile_image();
+            model.addAttribute("url", url);
         }
 
         // Model 객체는 자바 클래스와 템플릿 간의 연결고리 역할을 한다. Model 객체에 값을 담아두면 템플릿에서 그 값을 사용할 수 있다.
