@@ -48,10 +48,10 @@ public class CalendarService {
 
     private void createDefaultEvents(UserCalendar calendar) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         // 특정 날짜와 시간을 설정
-        LocalDateTime startDate1 = LocalDateTime.parse("1990-09-09 00:00:00", formatter);
+        LocalDateTime startDate1 = LocalDateTime.parse("1990-09-09T00:00:00", formatter);
         LocalDateTime endDate1 = startDate1.plusHours(1);
 
         Event event1 = new Event();

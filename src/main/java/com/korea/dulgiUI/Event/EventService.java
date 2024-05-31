@@ -29,7 +29,12 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public Event create(String title, LocalDateTime startDate, LocalDateTime endDate, String link, Long calendarId) {
+    public Event create(String title,
+                        LocalDateTime startDate,
+                        LocalDateTime endDate,
+                        String link,
+                        Long calendarId) {
+
         Event e = new Event();
         e.setTitle(title);
         e.setCreateDate(LocalDateTime.now());
@@ -41,7 +46,13 @@ public class EventService {
         return eventRepository.save(e); // 저장된 이벤트 객체 반환
     }
 
-    public Event modify(Long eventId, String title, LocalDateTime startDate, LocalDateTime endDate, String registrationLink, Long calendarId) {
+    public Event modify(Long eventId,
+                        String title,
+                        LocalDateTime startDate,
+                        LocalDateTime endDate,
+                        String registrationLink,
+                        Long calendarId) {
+
         // 1. 주어진 이벤트 ID를 사용하여 데이터베이스에서 해당 이벤트를 조회합니다.
         Event event = eventRepository.findById(eventId).orElse(null);
 

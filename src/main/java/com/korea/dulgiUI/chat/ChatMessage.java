@@ -20,7 +20,7 @@ public class ChatMessage {
     private String sender; // 메세지 보낸사람
 
     private String message; // 메시지
-    @DateTimeFormat(pattern = "yyyy-MM-dd'-'HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd''HH:mm:ss")
     private LocalDateTime createDate;
 
     @ManyToOne(cascade = CascadeType.REMOVE)

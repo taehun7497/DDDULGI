@@ -69,6 +69,6 @@ public class ChatroomController {
         SiteUser siteUser = userService.getUser(principal.getName());
         model.addAttribute("chatroom", chatRoom);
         model.addAttribute("ownerUser", siteUser);
-        return "Chatroom";
+        return "chatroom";
     }
 }

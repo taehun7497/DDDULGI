@@ -2,6 +2,7 @@ package com.korea.dulgiUI.User;
 
 import com.korea.dulgiUI.calendar.UserCalendar;
 import com.korea.dulgiUI.calendar.CalendarService;
+import com.korea.dulgiUI.dulgiUIApplication;
 import com.korea.dulgiUI.error.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
@@ -122,7 +123,7 @@ public class UserService {
         if (!file.isEmpty()) {
             try {
                 // 파일 저장 경로 설정 (C 드라이브의 Temp 폴더에 저장)
-                String path = "C:\\Temp";
+                String path = dulgiUIApplication.getOsType().getLoc();
                 File fileFolder = new File(path);
                 if (!fileFolder.exists()) {
                     fileFolder.mkdirs();
@@ -137,7 +138,7 @@ public class UserService {
 
                 String name = UUID.randomUUID().toString();
                 // 파일 저장 경로 설정
-                String filePath = path + "\\" +name  + extension;
+                String filePath = path + "/" +name  + extension;
                 file.transferTo(Paths.get(filePath));
                 // GIF, JPEG, JPG 파일에 대한 처리
                 if (extension.equals(".gif") || extension.equals(".jpeg") || extension.equals(".jpg") || extension.equals(".png")) {
@@ -160,7 +161,7 @@ public class UserService {
     @Transactional
     public void save(SiteUser user, String url) {
         try {
-            String path = "C:\\Temp"; // 파일이 저장된 경로에 맞게 변경
+            String path = dulgiUIApplication.getOsType().getLoc(); // 파일이 저장된 경로에 맞게 변경
             if (user.getProfile_image() != null) {
                 File oldFile = new File(path + user.getProfile_image());
                 if (oldFile.exists()) {
@@ -174,5 +175,4 @@ public class UserService {
             e.printStackTrace();
         }
     }
-
 }

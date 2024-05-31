@@ -1,36 +1,335 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Redirect</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{|/style.css|}">
+    <link th:href="@{|https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css|}" rel="stylesheet"
+          type="text/css"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/bccde956fc.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <title>Document</title>
 </head>
-<body class="bg-gray-100 text-gray-800">
-<div class="container mx-auto py-8">
-    <div class="flex justify-center mb-4">
-        <div class="form-control">
-            <input type="text" id="searchInput" placeholder="Search" class="input input-bordered w-24 md:w-auto"/>
-            <button onclick="performSearch()" class="btn btn-primary ml-2">Search</button>
+
+<body>
+<div class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[800px] h-[800px]">
+        <h1 class="text-2xl font-bold mb-4">Chat Room</h1>
+        <div id="messages" class="h-64 overflow-y-auto mb-4">
+            <div>
+                <div th:each="list :${chatroom.chatMessageList}">
+                    <div th:if="${list.sender.username == ownerUser.username}">
+                        <div class="chat chat-end flex flex-col items-end">
+                            <div class="flex items-center">
+                                <div class="chat-header" >
+                                    [[${list.sender.nickname}]]
+                                    <time class="text-xs opacity-50" th:text="${list.createDate}"></time>
+                                </div>
+                            </div>
+                            <div class="chat-bubble mr-2" th:if="${list.message != null}" th:text="${list.message}"></div>
+                            <div class="chat-bubble mr-2" th:if="${list.image != null}" >
+                                <img th:src="@{|${list.image.url}|}" alt=이미지>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${list.sender.username != ownerUser.username}">
+                        <div class="chat chat-start flex flex-col items-start">
+                            <div class="flex">
+                                <div class="chat-header">
+                                    [[${list.sender.nickname}]]
+                                    <time class="text-xs opacity-50" th:text="${list.createDate}"></time>
+                                </div>
+                            </div>
+                            <div class="chat-bubble mr-2" th:if="${list.message != null}" th:text="${list.message}"></div>
+                            <div class="chat-bubble mr-2" th:if="${list.image != null}" >
+                                <img th:src="@{|${list.image.url}|}" alt=이미지>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="greetings">
+                    <div id="images"></div>
+                </div>
+            </div>
+        </div>
+        <input id="message" type="text" class="border border-gray-300 rounded-lg p-2 w-full mb-4"
+               placeholder="Type your message..."/>
+        <div class="flex gap-5">
+            <button id="sendButton" class="bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg" onclick="sendChat()">Send</button>
+            <i class="fa-regular fa-image fa-xl" id="img">
+                <input type="file" id="file" style="display: none;">
+            </i>
+            <!-- Open the modal using ID.showModal() method -->
+            <button class="btn" onclick="my_modal_5.showModal()">사진첩</button>
+            <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box h-[600px] w-[600px]">
+                    <div class="flex flex-wrap overflow-auto h-[85%] gap-5">
+                        <div th:each="img : ${imgList}" class="h-[120px] w-[120px]">
+                            <img th:src="@{|${img.url}|}" alt="사진" class="w-[100%] h-[100%]">
+                        </div>
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <!-- if there is a button in form, it will close the modal -->
+                            <button class="btn">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
         </div>
     </div>
-</div>
-
-<script>
-    function performSearch() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-
-        if (query === 'calendar') {
-            window.location.href = '/calendar';
-        } else if (query === 'board') {
-            window.location.href = '/board';
-        } else if (query === 'profile') {
-            window.location.href = '/profile';
-        } else {
-            alert('No matching page found');
+    <div>
+        <button class="bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg">
+            <a th:href="@{/user/main}">나가기</a>
+        </button>
+    </div>
+    <!--    <div>-->
+    <!--        <div id="images">이미지들</div>-->
+    <!--    </div>-->
+    <script th:inline="javascript">
+        function connect() {
+            var socket = new SockJS("http://www.oniontalk.kro.kr/ws-stomp");
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('웹소켓 연결 성공:', frame);
+                const aa = /*[[${chatroom.id}]]*/;
+                const friendUser = [[${friendUser.username}]];
+                //구독
+                stompClient.subscribe('/sub/talk/' + aa, function (chatMessageDto) {
+                    showChat(JSON.parse(chatMessageDto.body));
+                });
+                stompClient.subscribe('/sub/alarm/' + friendUser, function (alarmDto) {
+                });
+                stompClient.subscribe('/sub/img/'+ aa,function (img){
+                    if(!(img.body === 'ing')){
+                        showImage(img.body);
+                     }
+                });
+            });
         }
-    }
-</script>
+
+
+        //html 에서 입력값, roomId 를 받아서 Controller 로 전달
+        function sendChat() {
+            const aa = /*[[${chatroom.id}]]*/;
+            const sender = /*[[${ownerUser.nickname}]]*/;
+            const friendUser = [[${friendUser.username}]];
+            const acceptUser = [[${friendUser.nickname}]];
+
+            var currentDate = new Date();
+            currentDate.setTime(currentDate.getTime() + (9 * 60 * 60 * 1000));
+           var formattedDate = new Date(currentDate).toISOString(); // ISO 형식으로 변환
+
+            if ($("#message").val() != "") {
+                stompClient.send("/pub/talk/" + aa, {},
+                    JSON.stringify({
+                        'sender': sender,
+                        'message': $("#message").val(),
+                        'createDate': formattedDate
+                    }));
+            }
+
+            stompClient.send("/pub/alarm/" +friendUser, {},
+                JSON.stringify({
+                    'message' : $("#message").val(),
+                    'accept' : 'false',
+                    'sendUsername' : sender,
+                    'acceptUsername' : acceptUser,
+                    'chatRoomId' : aa
+                }));
+                $("#message").val('');
+        }
+
+        function showChat(chatMessageDto) {
+            const sender = /*[[${ownerUser.nickname}]]*/;
+            if (chatMessageDto.sender == sender) {
+                $("#greetings").append(
+                    "<div class = 'chat chat-end  flex flex-col items-end'><div class = 'chat-header'>" + chatMessageDto.sender + " <time class='text-xs opacity-50'>" + chatMessageDto.createDate + "</time></div><div class = 'chat-bubble mr-2'>" + chatMessageDto.message + "</div></div>"
+                );
+            } else {
+                $("#greetings").append(
+                    "<div class = 'chat chat-start flex flex-col items-start'><div class = 'chat-header'>" + chatMessageDto.sender + " <time class='text-xs opacity-50'>" + chatMessageDto.createDate + "</time></div><div class = 'chat-bubble ml-2'>" + chatMessageDto.message + "</div></div>"
+                );
+            }
+              var messageContainer = document.getElementById("messages");
+              messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        $(function () {
+
+            $("#message").keyup(function (event) {
+                if (event.keyCode === 13) {
+                    sendChat();
+                }
+            });
+        });
+
+        // 페이지 로드 후 실행되는 부분
+        document.addEventListener('DOMContentLoaded', function () {
+            connect();
+
+             // 채팅창의 div 요소를 가져옵니다.
+         var messageContainer = document.getElementById("messages");
+
+            // 스크롤을 아래로 이동시킵니다.
+         messageContainer.scrollTop = messageContainer.scrollHeight;
+        });
+
+        //이미지 아이콘 클릭시 이미지 받아옴
+        const img = document.getElementById('img');
+        img.addEventListener('click',() => {
+             document.getElementById('file').click();
+        });
+         const fileInput = document.getElementById('file');
+            fileInput.addEventListener('change', sendImage);
+
+        //이미지 전송
+        function sendImage() {
+            var input = document.getElementById('file');
+            var file = input.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var arrayBuffer = event.target.result;
+                    var base64String = arrayBufferToBase64(arrayBuffer);
+                    console.log("============================>");
+                    console.log(arrayBuffer);
+                    console.log(base64String);
+                    sendBase64InChunks(base64String, 60000); // 6KB로 분할하여 전송
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                console.log("No file selected");
+            }
+        }
+        //base64 로 인코딩
+          function arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+            // 분할파일 전송
+           function sendBase64InChunks(base64String, chunkSize) {
+            var totalChunks = Math.ceil(base64String.length / chunkSize);
+            let complete = false;
+            const aa = /*[[${chatroom.id}]]*/;
+            const sender = /*[[${ownerUser.nickname}]]*/;
+            const acceptUser = [[${friendUser.nickname}]];
+             var currentDate = new Date();
+            currentDate.setTime(currentDate.getTime() + (9 * 60 * 60 * 1000));
+           var formattedDate = new Date(currentDate).toISOString(); // ISO 형식으로 변환
+
+            for (var i = 0; i < totalChunks; i++) {
+                if( i == totalChunks - 1) {
+                    complete = true;
+                }
+                var chunk = base64String.slice(i * chunkSize, (i + 1) * chunkSize);
+                stompClient.send("/pub/img/"+ aa, {}, JSON.stringify({
+                chunk: chunk,
+                index: i,
+                total: totalChunks,
+                sender : sender,
+                chatroomId : aa,
+                createDate : formattedDate
+                }));
+            }
+        }
+
+
+
+
+        //이미지 보여주기
+function showImage(imageSrc) {
+ console.log(imageSrc);
+
+    // Create first imgWrapper and imgElement for the 'images' container
+    var imgWrapper1 = document.createElement('div');
+    imgWrapper1.style.width = '100px'; // Set width to 100px
+    imgWrapper1.style.height = '100px'; // Set height to 100px
+
+    var imgElement1 = document.createElement('img');
+    imgElement1.src = imageSrc;
+    imgElement1.style.width = '100%'; // Set image width to fill parent
+    imgElement1.style.height = '100%'; // Set image height to fill parent
+    imgElement1.style.objectFit = 'cover'; // Ensure image covers the parent without cutting off
+
+    console.log(imgElement1);
+
+    imgWrapper1.appendChild(imgElement1);
+    document.getElementById('images').appendChild(imgWrapper1);
+
+    // Create second imgWrapper and imgElement for the 'newImg' container
+    var imgWrapper2 = document.createElement('div');
+    imgWrapper2.style.width = '100px'; // Set width to 100px
+    imgWrapper2.style.height = '100px'; // Set height to 100px
+
+    var imgElement2 = document.createElement('img');
+    imgElement2.src = imageSrc;
+    imgElement2.style.width = '100%'; // Set image width to fill parent
+    imgElement2.style.height = '100%'; // Set image height to fill parent
+    imgElement2.style.objectFit = 'cover'; // Ensure image covers the parent without cutting off
+
+    console.log(imgElement2);
+
+    imgWrapper2.appendChild(imgElement2);
+    document.getElementById('newImg').appendChild(imgWrapper2);
+}
+    </script>
+
+    <script>
+        //이미지 보여주기
+<!--function showImage(imageSrc) {-->
+<!--var imgWrapper = document.createElement('div');-->
+<!--imgWrapper.style.width = '100px'; // 너비를 100px로 설정-->
+<!--imgWrapper.style.height = '100px'; // 높이를 100px로 설정-->
+
+<!--var imgElement = document.createElement('img');-->
+<!--imgElement.src = imageSrc;-->
+<!--imgElement.style.width = '100%'; // 이미지가 부모 요소의 너비를 채우도록 설정-->
+<!--imgElement.style.height = '100%'; // 이미지가 부모 요소의 높이를 채우도록 설정-->
+<!--imgElement.style.objectFit = 'cover'; // 이미지가 잘리지 않고 부모 요소에 맞게 조정되도록 설정-->
+
+<!--imgWrapper.appendChild(imgElement);-->
+<!--document.getElementById('images').appendChild(imgWrapper);-->
+<!--}-->
+
+<!--let receivedImageData = ''; // 이미지 데이터를 임시로 저장할 변수-->
+<!--let tmpArr = [];-->
+<!--let receivedChunkCnt = 0;-->
+<!--// 이미지 데이터를 받아서 합치고 이미지로 표시하는 함수-->
+<!--function showImageChunks(chunkData) {-->
+
+<!--const chunk = JSON.parse(chunkData.body); // 청크 데이터 파싱-->
+<!--tmpArr[chunk.index] = chunk;-->
+<!--receivedChunkCnt++;-->
+<!--console.log(chunk.total);-->
+<!--if (receivedChunkCnt === chunk.total) { // 모든 청크를 받았는지 확인-->
+<!-- // 모든 청크를 받았다면-->
+<!-- let chuckedResult = "";-->
+<!-- tmpArr.forEach((tmp) => {-->
+<!--     console.log(tmp.index);-->
+<!--     receivedImageData += tmp.chunk;-->
+<!-- });-->
+<!-- const imageUrl = "data:image/jpeg;base64," + receivedImageData; // 합친 이미지 데이터를 Base64 형식으로 변환-->
+<!-- showImage(imageUrl); // 이미지로 표시-->
+<!-- receivedImageData = ''; // 임시 변수 초기화-->
+<!-- tmpArr = [];-->
+<!-- receivedChunkCnt = 0;-->
+<!--}-->
+<!--}-->
+    </script>
+</div>
 </body>
+
 </html>

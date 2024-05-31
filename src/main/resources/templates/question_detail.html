@@ -42,9 +42,9 @@
                     <div class="flex mb-3">
                         <div class="me-auto p-2" th:text="${comments.content}"></div>
                         <div class="badge bg-light text-dark p-2 text-start">
-                            <div class="mb-2" th:if="${question.author != null}">
-                                <span th:text="${question.author.username}"></span>
-                                <span th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                            <div class="mb-2" th:if="${answer.author != null}">
+                                <span th:text="${answer.author.username}"></span>
+                                <span th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></span>
                             </div>
                         </div>
                     </div>

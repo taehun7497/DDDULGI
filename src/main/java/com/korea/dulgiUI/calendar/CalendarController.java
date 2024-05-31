@@ -4,7 +4,6 @@ import com.korea.dulgiUI.Event.Event;
 import com.korea.dulgiUI.Event.EventForm;
 import com.korea.dulgiUI.Event.EventService;
 import com.korea.dulgiUI.User.SiteUser;
-import com.korea.dulgiUI.User.UserDetail;
 import com.korea.dulgiUI.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,7 +38,8 @@ public class CalendarController {
     }
 
     @PutMapping("/modify/{eventId}")
-    public ResponseEntity<?> modifyEvent(@PathVariable Long eventId, @RequestBody EventForm eventForm) {
+    public ResponseEntity<?> modifyEvent(@PathVariable Long eventId,
+                                         @RequestBody EventForm eventForm) {
         try {
             // 클라이언트로부터 전송된 이벤트 정보를 사용하여 이벤트를 수정합니다.
             Event modifiedEvent = eventService.modify(eventId, eventForm.getTitle(), eventForm.getStartDate(),
@@ -61,7 +60,9 @@ public class CalendarController {
 
     @GetMapping("/{calendarId}")
     public String viewCalendar(Model model, @PathVariable(name = "calendarId") String calendarId,
-                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth, @AuthenticationPrincipal UserDetails userDetails) {
+                               @RequestParam(name = "targetMonth", required = false, defaultValue = "0") int targetMonth,
+                               @AuthenticationPrincipal UserDetails userDetails) {
+
         Long parsedCalendarId;
         try {
             parsedCalendarId = Long.parseLong(calendarId);

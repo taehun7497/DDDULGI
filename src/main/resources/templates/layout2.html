@@ -33,5 +33,19 @@
     </div>
     <th:block layout:fragment="script"></th:block>
 </body>
+<script th:inline="javascript">
+
+    function check() {
+        const aa = /*[[${#authentication}]]*/null
+
+        console.log(aa);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // 페이지 로드 시 로그인 여부를 확인하고 웹소켓에 연결
+        check();
+    });
+
+</script>
 
 </html>
